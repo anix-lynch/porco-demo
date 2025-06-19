@@ -1,0 +1,19 @@
+services:
+  porco-gallery:
+    build: .
+    ports:
+      - "8080:80"
+    container_name: porco-demo
+    restart: unless-stopped
+    environment:
+      - NGINX_ENVSUBST_TEMPLATE_SUFFIX=.template
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.porco.rule=Host(`localhost`)"
+      - "traefik.http.services.porco.loadbalancer.server.port=80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
